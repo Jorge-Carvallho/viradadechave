@@ -1,3 +1,15 @@
 Flask
 psycopg2-binary
 python-decouple
+
+
+
+# HOST_PGSQL=app-data
+# NAME_PGSQL=seu_banco
+# USER_PGSQL=seu_usuario
+# PASS_PGSQL=sua_senha
+
+# MAIL_USERNAME=sua_conta_de_email
+# MAIL_PASSWORD=sua_senha_de_email
+# MAIL_SERVER=smtp.gmail.com
+# MAIL_PORT=587
