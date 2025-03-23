@@ -1,10 +1,38 @@
 Flask
 psycopg2-binary
 python-decouple
+# -------------------------------------------------------------------------------
+# Variáveis:
+# HOST_PGSQL: Define o host onde o PostgreSQL está rodando. Para um ambiente local, você pode manter como localhost.
+# Exemplo: HOST_PGSQL=localhost
 
+# NAME_PGSQL: Define o nome do banco de dados que será criado automaticamente no PostgreSQL.
+# Exemplo: NAME_PGSQL=seu_banco
 
+# USER_PGSQL: Define o nome de usuário para se conectar ao banco de dados PostgreSQL.
+# Exemplo: USER_PGSQL=seu_usuario
 
+# PASS_PGSQL: Define a senha associada ao usuário do PostgreSQL.
+# Exemplo: PASS_PGSQL=sua_senha
+#!
+#!
+#!
+#!
+#!
+# Variáveis:
+# MAIL_USERNAME: Define o endereço de e-mail utilizado para autenticação no servidor de e-mail.
+# Exemplo: MAIL_USERNAME=sua_conta_de_email
 
+# MAIL_PASSWORD: Define a senha para o endereço de e-mail fornecido.
+# Exemplo: MAIL_PASSWORD=sua_senha_de_email
+
+# MAIL_SERVER: Define o servidor SMTP para envio de e-mails. Se você estiver utilizando o Gmail, o valor será smtp.gmail.com.
+# Exemplo: MAIL_SERVER=smtp.gmail.com
+
+# MAIL_PORT: Define a porta usada para a comunicação com o servidor de e-mail. Para o Gmail, o valor padrão é 587 para comunicação segura.
+# Exemplo: MAIL_PORT=587
+
+# ---------------------------------------------------------------------------------
 
 # cirar um arquivo .env dentro de backend com as seguintes variáveis:
 
@@ -17,3 +45,76 @@ python-decouple
 # MAIL_PASSWORD=sua_senha_de_email
 # MAIL_SERVER=smtp.gmail.com
 # MAIL_PORT=587
+
+# ------------------------------------------------------------------------------------------------------------
+# Como Testar com o Postman
+# Passo a Passo para Testar o Registro de Usuário
+# Abra o Postman.
+
+# Selecione o método POST.
+
+# No campo de URL, insira o endpoint da API: http://localhost:5000/api/register (ou a URL do seu servidor se não for local).
+
+# Vá até a aba Body e selecione a opção raw.
+
+# Escolha o tipo JSON no menu suspenso à direita.
+
+# No corpo da requisição, insira o JSON de registro:
+
+#Teste aqui, copiar
+
+# {
+#   "user_name": "Nome do Usuário",
+#   "email": "email@exemplo.com",
+#   "email_user_second": "emailsecundario@exemplo.com",
+#   "passw": "senha123"
+# }
+# Clique em Send para enviar a requisição.
+
+# A resposta esperada será:
+#Aqui a resposta
+
+# {
+#   "message": "Usuário registrado com sucesso!",
+#   "user": {
+#     "id": "uuid-gerado",
+#     "user_name": "Nome do Usuário",
+#     "email": "email@exemplo.com",
+#     "email_user_second": "emailsecundario@exemplo.com"
+#   }
+# }
+# -------------------------------------------------------------------------------------------------
+
+
+#Passo a Passo para Testar o Login de Usuário
+# No Postman, selecione novamente o método POST.
+
+# Insira a URL do endpoint de login: http://localhost:5000/api/login.
+
+# Na aba Body, selecione a opção raw e escolha o tipo JSON.
+
+# No corpo da requisição, insira o JSON de login:
+# Teste aqui, copiar
+
+# {
+#   "email": "email@exemplo.com",
+#   "passw": "senha123"
+# }
+# Clique em Send para enviar a requisição.
+
+# A resposta esperada será:
+
+# {
+#   "message": "Login realizado com sucesso!",
+#   "user": {
+#     "id": "uuid-gerado",
+#     "user_name": "Nome do Usuário",
+#     "email": "email@exemplo.com"
+#   }
+# }
+# Caso as credenciais sejam inválidas, a resposta será:
+
+
+# {
+#   "message": "Credenciais inválidas. Login não realizado."
+# }
