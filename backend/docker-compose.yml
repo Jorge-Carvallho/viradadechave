@@ -1,0 +1,25 @@
+services:
+  app-data:
+    image: postgres:17.2
+    container_name: app-data
+    environment:
+      POSTGRES_USER: ${USER_PGSQL}
+      POSTGRES_PASSWORD: ${PASS_PGSQL}
+      POSTGRES_DB: ${NAME_PGSQL}
+    ports:
+      - "127.0.0.1:5432:5432"
+    volumes:
+      - app-data:/var/lib/postgresql/data/
+
+  flask-api:
+    build: .
+    container_name: flask-api
+    ports:
+      - "5000:5000"
+    depends_on:
+      - app-data
+    environment:
+      DATABASE_URL: postgresql://${USER_PGSQL}:${PASS_PGSQL}@app-data:5432/${NAME_PGSQL}
+
+volumes:
+  app-data:

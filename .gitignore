@@ -1,0 +1,15 @@
+# Ignorar arquivos de ambiente
+.env
+
+# Ignorar dependências da virtualenv
+venv/
+__pycache__/
+
+# Ignorar arquivos de log e cache
+*.log
+*.pyc
+*.pyo
+*.sqlite3
+
+# Ignorar diretórios do Docker
+volumes/
