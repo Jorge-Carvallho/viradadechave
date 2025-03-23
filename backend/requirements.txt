@@ -4,6 +4,10 @@ python-decouple
 
 
 
+
+
+# cirar um arquivo .env dentro de backend com as seguintes variáveis:
+
 # HOST_PGSQL=app-data
 # NAME_PGSQL=seu_banco
 # USER_PGSQL=seu_usuario
