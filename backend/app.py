@@ -55,6 +55,7 @@ def register_user():
     Respostas:
     - 201: Usuário registrado com sucesso
     - 400: Dados inválidos ou erro no registro
+    - 409: Email já registrado
     """
     data = request.get_json()
     user_name = data['user_name']
@@ -63,8 +64,18 @@ def register_user():
     passw = data['passw']
 
     try:
+        # Verificar se o email já está registrado
         conn = get_db_connection()
         cursor = conn.cursor()
+        cursor.execute('SELECT * FROM users WHERE email = %s', (email,))
+        existing_user = cursor.fetchone()
+
+        if existing_user:
+            cursor.close()
+            conn.close()
+            return jsonify({"message": "Este email já está registrado."}), 409
+        
+        # Registrar o novo usuário
         cursor.execute(
             'INSERT INTO users (user_name, email, email_user_second, passw) VALUES (%s, %s, %s, %s) RETURNING id, user_name, email, email_user_second',
             (user_name, email, email_user_second, passw)
@@ -85,6 +96,7 @@ def register_user():
         }), 201
     except Exception as e:
         return jsonify({"message": "Erro ao registrar usuário", "error": str(e)}), 400
+
 
 # =================== ROTA DE LOGIN ===================
 @app.route('/api/login', methods=['POST'])

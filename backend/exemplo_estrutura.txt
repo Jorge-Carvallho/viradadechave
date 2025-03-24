@@ -2,13 +2,11 @@ viradaDeChave/
 │
 ├── backend/
 │   ├── app.py                     # Arquivo principal da aplicação Flask
-│   ├── init_db.py                 # Script para inicializar o banco de dados
-│   ├── models.py                  # Arquivo onde você define modelos (opcional)
-│   ├── email_service.py           # Arquivo responsável pelo envio de emails
+│   ├── init_db.py                 # Script para inicializar o banco de dados   
 │   ├── requirements.txt           # Dependências do projeto
 │   ├── .env                       # Arquivo com variáveis de ambiente
 │   ├── docker-compose.yml         # Configuração do Docker
 │   ├── Dockerfile                 # Dockerfile para a imagem do backend
-│   └── migrations/                # Diretório para scripts de migração (se necessário)
+│         
 │
 └── .gitignore                     # Arquivo para ignorar arquivos do Git
