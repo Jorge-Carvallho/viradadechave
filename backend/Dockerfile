@@ -1,25 +1,53 @@
-# Use a imagem oficial do Python 3.12 (slim) como base para o container.
-# A versão slim é uma versão mais enxuta da imagem do Python.
-FROM python:3.12-slim
+# =================== ESTÁGIO DE CONSTRUÇÃO ===================
+FROM python:3.9-slim as builder
 
-# Define o diretório de trabalho dentro do container
 WORKDIR /app
 
-# Copia o arquivo requirements.txt para o diretório de trabalho dentro do container
-COPY requirements.txt requirements.txt
+# 1. Instala dependências de compilação
+RUN apt-get update && apt-get install -y \
+    gcc \
+    python3-dev \
+    libpq-dev \
+    && rm -rf /var/lib/apt/lists/*
 
-# Atualiza o pip e instala todas as dependências do requirements.txt
-# Isso garante que as bibliotecas necessárias (como Flask, psycopg2, etc.) sejam instaladas.
-RUN pip install --upgrade pip && \
-    pip install -r requirements.txt
+# 2. Cria e ativa ambiente virtual
+RUN python -m venv /opt/venv
+ENV PATH="/opt/venv/bin:$PATH"
 
-# Copia todo o conteúdo do diretório atual (onde o Dockerfile está localizado) para o diretório /app no container
-COPY . .
+# 3. Instala dependências Python
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
 
-# Expõe a porta 5000 para que a aplicação Flask seja acessível fora do container.
+# =================== ESTÁGIO FINAL ===================
+FROM python:3.9-slim
+
+WORKDIR /app
+
+# 4. Copia apenas o necessário do estágio builder
+COPY --from=builder /opt/venv /opt/venv
+ENV PATH="/opt/venv/bin:$PATH"
+
+# 5. Instala apenas bibliotecas de sistema necessárias
+RUN apt-get update && apt-get install -y \
+    libpq5 \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
+
+# 6. Copia aplicação e scripts
+COPY --chown=flaskuser:flaskuser . .
+COPY --chown=flaskuser:flaskuser wait_for_postgres.py /wait_for_postgres.py
+RUN chmod +x /wait_for_postgres.py
+
+# 7. Configura usuário não-root
+RUN useradd -m flaskuser && \
+    chown -R flaskuser:flaskuser /app
+USER flaskuser
+
+# 8. Porta da aplicação
 EXPOSE 5000
 
-# Antes de rodar o Flask, o comando cria as tabelas no banco de dados usando o script init_db.py.
-# Após isso, o script app.py será iniciado, que é o servidor Flask.
-# O comando sh -c permite rodar múltiplos comandos, então o init_db.py é executado primeiro e depois o Flask.
-CMD ["sh", "-c", "python init_db.py && python app.py"]
+# 9. Comando de inicialização com health check
+HEALTHCHECK --interval=30s --timeout=3s \
+  CMD curl -f http://localhost:5000/api/health || exit 1
+
+CMD ["sh", "-c", "python /wait_for_postgres.py && python app.py"]

@@ -1,6 +1,20 @@
-Flask
-psycopg2-binary
-python-decouple
+# =================== CORE ===================
+Flask==2.3.2               # Framework web principal
+psycopg2-binary==2.9.7     # Adaptador PostgreSQL (binário)
+python-decouple==3.8       # Gerenciamento de variáveis de ambiente
+
+# =================== SEGURANÇA ===================
+bcrypt==4.0.1              # Hashing de senhas
+Werkzeug==2.3.7           # Utilities de segurança (incluído no Flask)
+
+# =================== BANCO DE DADOS ===================
+SQLAlchemy==2.0.19         # ORM opcional (recomendado para escalabilidade)
+Flask-SQLAlchemy==3.0.5    # Integração Flask + SQLAlchemy (opcional)
+
+# =================== DESENVOLVIMENTO ===================
+python-dotenv==1.0.0       # Carregamento do .env (para desenvolvimento)
+debugpy==1.6.7             # Debugging em VSCode (opcional)
+
 # -------------------------------------------------------------------------------
 # Variáveis:
 # HOST_PGSQL: Define o host onde o PostgreSQL está rodando. Para um ambiente local, você pode manter como localhost.

@@ -1,3 +1,5 @@
+version: '3.8'
+
 services:
   app-data:
     image: postgres:17.2
@@ -7,19 +9,30 @@ services:
       POSTGRES_PASSWORD: ${PASS_PGSQL}
       POSTGRES_DB: ${NAME_PGSQL}
     ports:
-      - "127.0.0.1:5432:5432"
+      - "5432:5432"
     volumes:
-      - app-data:/var/lib/postgresql/data/
+      - postgres_data:/var/lib/postgresql/data/
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${USER_PGSQL} -d ${NAME_PGSQL}"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
 
   flask-api:
-    build: .
+    build: .  # ← Esta linha é ESSENCIAL
     container_name: flask-api
     ports:
       - "5000:5000"
     depends_on:
-      - app-data
+      app-data:
+        condition: service_healthy
     environment:
-      DATABASE_URL: postgresql://${USER_PGSQL}:${PASS_PGSQL}@app-data:5432/${NAME_PGSQL}
+      - HOST_PGSQL=app-data
+      - NAME_PGSQL=${NAME_PGSQL}
+      - USER_PGSQL=${USER_PGSQL}
+      - PASS_PGSQL=${PASS_PGSQL}
+    volumes:
+      - .:/app
 
 volumes:
-  app-data:
+  postgres_data:
