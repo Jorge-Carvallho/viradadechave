@@ -127,3 +127,52 @@ def main():
 
 if __name__ == "__main__":
     main()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+#     Objetivo:
+# Esse script inicializa o banco de dados PostgreSQL criando as tabelas necessárias para o funcionamento de um sistema de usuários e recuperação de senhas.
+
+# Funções:
+# get_db_connection(max_retries: int = 3)
+# Tenta se conectar ao banco de dados PostgreSQL, com um número máximo de tentativas (max_retries). Se a conexão falhar, o script tenta novamente após um pequeno intervalo. Retorna uma conexão válida ou gera um erro após falhas repetidas.
+
+# create_table()
+# Cria a tabela users, que armazena dados dos usuários (nome, e-mail, senha). Se a tabela já existir, nada acontece.
+
+# create_password_reset_table()
+# Cria a tabela password_resets para gerenciar a recuperação de senhas dos usuários. Ela guarda o código de recuperação e a data de expiração.
+
+# main()
+# Função principal que chama as funções create_table() e create_password_reset_table(), garantindo que as tabelas necessárias existam no banco de dados.
+
+# Requisitos:
+# Banco de dados PostgreSQL funcionando e configurado com credenciais no arquivo .env.
+
+# Bibliotecas necessárias: psycopg2 (para conectar ao PostgreSQL) e decouple (para carregar variáveis de ambiente).
+
+# Processo:
+# Conecta ao banco de dados.
+
+# Cria as tabelas users e password_resets se elas não existirem.
+
+# Exibe mensagens no log informando o sucesso ou falha da operação.

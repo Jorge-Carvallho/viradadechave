@@ -36,3 +36,127 @@ services:
 
 volumes:
   postgres_data:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# Documentação do arquivo docker-compose.yml
+# Este arquivo define dois serviços principais para a aplicação: um banco de dados PostgreSQL e a API Flask. O Docker Compose facilita o gerenciamento e orquestração desses serviços de forma simples e eficaz.
+
+# Versão do Docker Compose
+# yaml
+
+# version: '3.8'
+# Define a versão do Docker Compose que está sendo utilizada para a configuração dos contêineres.
+
+# Serviços
+# 1. app-data (PostgreSQL)
+# yaml
+
+# app-data:
+#   image: postgres:17.2
+#   container_name: app-data
+#   environment:
+#     POSTGRES_USER: ${USER_PGSQL}
+#     POSTGRES_PASSWORD: ${PASS_PGSQL}
+#     POSTGRES_DB: ${NAME_PGSQL}
+#   ports:
+#     - "5432:5432"
+#   volumes:
+#     - postgres_data:/var/lib/postgresql/data/
+#   healthcheck:
+#     test: ["CMD-SHELL", "pg_isready -U ${USER_PGSQL} -d ${NAME_PGSQL}"]
+#     interval: 5s
+#     timeout: 5s
+#     retries: 5
+# Imagem: Utiliza a imagem oficial do PostgreSQL (postgres:17.2).
+
+# Nome do contêiner: O contêiner é nomeado como app-data.
+
+# Variáveis de Ambiente:
+
+# POSTGRES_USER: Usuário para o banco de dados (definido pela variável de ambiente ${USER_PGSQL}).
+
+# POSTGRES_PASSWORD: Senha para o banco de dados (definido pela variável de ambiente ${PASS_PGSQL}).
+
+# POSTGRES_DB: Nome do banco de dados a ser criado (definido pela variável de ambiente ${NAME_PGSQL}).
+
+# Portas: Expõe a porta 5432 do contêiner para a máquina host.
+
+# Volumes: Monta o volume postgres_data para persistência de dados do banco de dados.
+
+# Healthcheck: Define um healthcheck para garantir que o banco de dados esteja disponível antes de iniciar o serviço Flask. Utiliza o comando pg_isready para verificar a disponibilidade do PostgreSQL.
+
+# 2. flask-api (Aplicação Flask)
+# yaml
+
+# flask-api:
+#   build: .  # ← Esta linha é ESSENCIAL para o Flask ser reconstruído sempre que houver alterações no código
+#   container_name: flask-api
+#   ports:
+#     - "5000:5000"
+#   depends_on:
+#     app-data:
+#       condition: service_healthy
+#   environment:
+#     - HOST_PGSQL=app-data
+#     - NAME_PGSQL=${NAME_PGSQL}
+#     - USER_PGSQL=${USER_PGSQL}
+#     - PASS_PGSQL=${PASS_PGSQL}
+#   volumes:
+#     - .:/app
+# Build: A aplicação Flask é construída a partir do diretório atual (.). Esta linha garante que, sempre que o código da aplicação for alterado, a imagem será reconstruída.
+
+# Nome do contêiner: O contêiner é nomeado como flask-api.
+
+# Portas: A porta 5000 do contêiner é mapeada para a porta 5000 do host, permitindo que a API Flask seja acessada na URL http://localhost:5000.
+
+# Dependências: A aplicação Flask depende do serviço app-data (PostgreSQL) para garantir que o banco de dados esteja em funcionamento antes de iniciar.
+
+# Variáveis de Ambiente: As variáveis necessárias para a conexão com o banco de dados são definidas aqui:
+
+# HOST_PGSQL: Nome do serviço do banco de dados (app-data).
+
+# NAME_PGSQL: Nome do banco de dados.
+
+# USER_PGSQL: Usuário do banco de dados.
+
+# PASS_PGSQL: Senha do banco de dados.
+
+# Volumes: Monta o diretório atual (.) no contêiner em /app, permitindo que o código da aplicação seja atualizado em tempo real no contêiner sem a necessidade de reconstrução.
+
+# Volumes
+# yaml
+
+# volumes:
+#   postgres_data:
+# postgres_data: Volume utilizado para persistir os dados do banco de dados PostgreSQL, garantindo que as informações não sejam perdidas mesmo que o contêiner seja removido.
+
+# Resumo
+# app-data: Contêiner do PostgreSQL configurado com variáveis de ambiente para usuário, senha e nome do banco de dados. O serviço expõe a porta 5432 para comunicação com outros contêineres.
+
+# flask-api: Contêiner da aplicação Flask que depende do PostgreSQL para funcionar. Ele é configurado com variáveis de ambiente para a conexão com o banco e é acessível na porta 5000 do host.
+
+# Volumes: O volume postgres_data garante que os dados do banco de dados sejam persistidos.
+
+# Este arquivo docker-compose.yml permite rodar os dois serviços em conjunto, facilitando o desenvolvimento e a integração da aplicação Flask com o banco de dados PostgreSQL.
+
+
+
+
+
+
+
