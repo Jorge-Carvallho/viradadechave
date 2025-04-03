@@ -15,6 +15,8 @@ Flask-SQLAlchemy==3.0.5    # Integração Flask + SQLAlchemy (opcional)
 python-dotenv==1.0.0       # Carregamento do .env (para desenvolvimento)
 debugpy==1.6.7             # Debugging em VSCode (opcional)
 
+flask-cors
+
 # -------------------------------------------------------------------------------
 # Variáveis:
 # HOST_PGSQL: Define o host onde o PostgreSQL está rodando. Para um ambiente local, você pode manter como localhost.

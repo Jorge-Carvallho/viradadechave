@@ -1,4 +1,6 @@
+
 from flask import Flask, request, jsonify
+from flask_cors import CORS  # Importação do CORS
 import psycopg2
 from psycopg2 import sql
 from decouple import config
@@ -6,6 +8,7 @@ import bcrypt
 import re
 
 app = Flask(__name__)
+CORS(app)  # Ativação do CORS
 
 # =================== CONFIGURAÇÃO DA CONEXÃO COM O BANCO DE DADOS ===================
 def get_db_connection():
@@ -116,21 +119,26 @@ def register_user():
 @app.route('/api/login', methods=['POST'])
 def login_user():
     """
-    Rota para autenticar um usuário verificando o e-mail e a senha.
+    Rota para autenticar um usuário verificando o e-mail ou o nome de usuário e a senha.
     """
     data = request.get_json()
-    email = data.get('email')
-    passw = data.get('passw')
-    
+    usuario = data.get('usuario')  # Agora espera um nome de usuário OU um email
+    passw = data.get('password')
+
     conn = get_db_connection()
     cursor = conn.cursor()
-    cursor.execute('SELECT id, user_name, email, passw FROM users WHERE email = %s', (email,))
+    cursor.execute(
+        'SELECT id, user_name, email, passw FROM users WHERE email = %s OR user_name = %s',
+        (usuario, usuario)  # Verifica no email e no nome de usuário
+    )
     user = cursor.fetchone()
     cursor.close()
     conn.close()
-    
-    # Verifica se o usuário existe e se a senha está correta
-    if user and bcrypt.checkpw(passw.encode('utf-8'), user[3].encode('utf-8')):
+
+    if user is None:
+        return jsonify({"message": "Usuário não encontrado."}), 404
+
+    if bcrypt.checkpw(passw.encode('utf-8'), user[3].encode('utf-8')):
         return jsonify({
             "message": "Login realizado com sucesso!",
             "user": {
@@ -169,18 +177,6 @@ def get_users():
 if __name__ == '__main__':
     create_table()
     app.run(debug=True, host='0.0.0.0', port=5000)
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 

@@ -44,6 +44,6 @@ EXPOSE 5000
 
 # 8. Comando de inicialização com health check
 HEALTHCHECK --interval=30s --timeout=3s \
-  CMD curl -f http://localhost:5000/api/health || exit 1
+    CMD curl -f http://localhost:5000/api/health || exit 1
 
 CMD ["sh", "-c", "python /wait_for_postgres.py && python app.py"]
